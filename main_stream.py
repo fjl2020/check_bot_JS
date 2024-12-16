@@ -2,6 +2,8 @@ import streamlit as st
 from datetime import datetime as dt
 import polars as pl
 import file_service as fscv
+import visualization as vs
+import metrics
 
 st.set_page_config(layout="wide")
 
@@ -39,7 +41,14 @@ if fileOpen :
     st.dataframe(df_statistics['Magic Number','trades_total','trades_positivos',
                                'trades_negativos','ganancia_total','ganancia_positiva',
                                'avg_ganancia_total','avg_ganancia_positiva','pf','pct_win','win_loss_ratio'])
-                               
+    
+    st.dataframe(df_statistics.filter(pl.col('trades_total')>10))
+    st.subheader('Profit factor')
+    fig = vs.profit_factor(df_statistics.filter(pl.col('trades_total')>10))
+    st.plotly_chart(fig)
+    st.subheader('% win')
+    fig = vs.pct_win(df_statistics.filter(pl.col('trades_total')>10))
+    st.plotly_chart(fig)
 # tab1, tab2, tab3,tab4 = st.tabs(["Datos", "Métricas", "Distribución de retornos","Distribución temporal"])
             
 # with tab1:
